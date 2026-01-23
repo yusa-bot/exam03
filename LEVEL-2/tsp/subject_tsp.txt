@@ -1,0 +1,56 @@
+Assignment name			: tsp
+Expected files			: *.c *.h
+Allowed functions   : write, sqrtf, getline, fseek, fscanf, ferror, feof, fabsf, memcpy, fprintf, fclose, malloc, calloc, realloc, free, fopen, errno, stderr, stdin, stdout
+-------------------------------------------------------
+
+この問題を「旅行販売員問題」として初めて言及した出版物は、
+1949年にジュリア・ロビンソンがRAND Corporationの報告書「ハミルトンゲーム（旅行販売員問題）について」で発表したものである。
+
+彼女が問題を定義した方法は以下の通りである。
+
+「本稿の目的は、旅行販売員問題に関連する問題を解決する方法を提示することである。
+元の問題について説明することは有意義と思われる。
+一つの定式化は、ワシントンを出発し、
+すべての州都を訪れた後、ワシントンに戻る販売員のための最短ルートを見つけることである。
+
+より一般的には、平面上に与えられた n 個の点を含む最短の閉曲線を見つけることである。」
+
+for example with the following set of cities:
+0, 0
+1, 0
+2, 0
+0, 1
+1, 1
+2, 1
+1, 2
+2, 2
+which can be presented as follows:
++ + +
++ + +
+  + +
+the shortest path is:
+ _____
+|__   |
+   |__|
+
+したがって、この経路の長さを出力する必要があります。つまり：
+8.00
+
+標準入力から 『%f, %f\n』 の形式で都市座標のセットを読み取り、
+これら全ての都市を含む最短経路の長さを 『%.2f』 の形式で出力するプログラムを作成してください。
+
+プログラムは11都市を超えるケースではテストされません。
+
+このディレクトリには、演習の退屈な部分全てを含むtsp.cファイルと、プログラムテスト用のサンプルファイルがあります。
+
+ヒント：sqrtfを使用するには、コンパイルコマンドの末尾に-lmを追加してください。
+
+For example this should work:
+$> cat square.txt
+1, 1
+0, 1
+1, 0
+0, 0
+$> ./tsp < square.txt | cat -e
+4.00$
+

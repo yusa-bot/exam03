@@ -1,0 +1,33 @@
+
+Allowed functions:
+    read, strlen, malloc, calloc, realloc, free, printf, perror
+     
+------------------------------------------------------------------------------
+
+引数としてsを一つだけ受け取るプログラムを作成してください。
+
+プログラムは標準入力から読み込み、読み込んだ内容をすべて標準出力に書き出します。
+ただし、sが存在する箇所はすべて『*』に置換されます。
+
+引数なしで呼び出された場合、空の引数で呼び出された場合、
+または複数の引数で呼び出された場合、プログラムは1を返す必要があります。
+
+読み込み時またはmalloc中にエラーが発生した場合、
+stderrに「Error: 」とエラーメッセージを書き出し、1を返す必要があります。
+
+------------------------------------------------------------------------------
+
+For example :
+
+./filter bonjour
+は以下と同じ動作をする
+sed 's/bonjour/*******/g'
+
+$> echo 'abcdefgaaaabcdefabc' | ./filter abc | cat -e
+***defgaaa***def***
+
+$> echo "The secret word is hidden in this text." | ./filter secret
+The ****** word is hidden in this text.
+
+$> echo "banana banana apple" | ./filter banana
+****** ****** apple
