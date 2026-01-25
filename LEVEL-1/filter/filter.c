@@ -60,23 +60,28 @@ void ft_check_replace(char **str, char *arg){
 	*str = res;
 }
 
-int main(int ac, char **av){
+int main(int ac, char **av)
+{
 	if(ac != 2 || av[1][0] == '\0')
 		return 1;
+
 	char *str = calloc(1, 1);
 	char *dest = malloc((size_t)BUFFER_SIZE + 1);
-	if(!dest)
-		print_error(&dest, &str, 0, 0);
+	// if(!dest)
+	// 	print_error(&dest, &str, 0, 0);
 
 	ssize_t line_b = 1;
-	while(line_b > 0){
+	while(line_b > 0)
+	{
 		line_b = read(0, dest, BUFFER_SIZE);
-		if (line_b == -1)
-			print_error(&dest, &str, 1, 1);
+		// if (line_b == -1)
+		// 	print_error(&dest, &str, 1, 1);
+
 		dest[line_b] = '\0';
-		char *tmp = ft_strjoin(str, dest);
-		if (!tmp)
-			print_error(&dest, &str, 1, 1);
+		char *tmp = ft_strjoin(str, dest); // ?
+		// if (!tmp)
+		// 	print_error(&dest, &str, 1, 1);
+
 		free(str);
 		str = tmp;
 	}

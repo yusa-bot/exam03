@@ -58,12 +58,14 @@ int scan_int(FILE *f, va_list ap) {
     return 1;
 }
 
-int scan_string(FILE *f, va_list ap) {
+int scan_string(FILE *f, va_list ap)
+{
     char *str = va_arg(ap, char*);
     int c = fgetc(f);
     int chars_scaned = 0;
 
-    while (c != EOF && !isspace(c)) {
+    while (c != EOF && !isspace(c))
+	{
         str[chars_scaned] = c;
         chars_scaned++;
         c = fgetc(f);
@@ -76,8 +78,10 @@ int scan_string(FILE *f, va_list ap) {
     return 1;
 }
 
-int match_conv(FILE *f, const char **format, va_list ap) {
-    switch (**format) {
+int match_conv(FILE *f, const char **format, va_list ap)
+{
+    switch (**format)
+	{
         case 'c':
             return scan_char(f, ap);
         case 'd':
@@ -93,38 +97,55 @@ int ft_vfscanf(FILE *f, const char *format, va_list ap) {
     int nconv = 0;
     int ret;
 
-    while (*format) {
-        if (*format == '%') {
+    while (*format)
+	{
+        if (*format == '%')
+		{
             format++;
             ret = match_conv(f, &format, ap);
-            if (ret == -1) {
+            if (ret == -1)
+			{
                 return (nconv == 0) ? -1 : nconv;
-            } else if (ret == 0) {
+            }
+			else if (ret == 0)
+			{
                 return nconv;
-            } else {
+            }
+			else
+			{
                 nconv++;
             }
-        } else if (isspace(*format)) {
-            if (match_space(f) == -1) {
+        }
+		else if (isspace(*format))
+		{
+            if (match_space(f) == -1)
+			{
                 return (nconv == 0) ? -1 : nconv;
             }
-        } else {
+        }
+		else
+		{
             ret = match_char(f, *format);
-            if (ret == -1) {
+            if (ret == -1)
+			{
                 return (nconv == 0) ? -1 : nconv;
-            } else if (ret == 0) {
+            }
+			else if (ret == 0)
+			{
                 return nconv;
             }
         }
         format++;
     }
-    if (ferror(f)) {
+    if (ferror(f))
+	{
         return -1;
     }
     return nconv;
 }
 
-int ft_scanf(const char *format, ...) {
+int ft_scanf(const char *format, ...)
+{
     va_list ap;
     va_start(ap, format);
     int ret = ft_vfscanf(stdin, format, ap);
