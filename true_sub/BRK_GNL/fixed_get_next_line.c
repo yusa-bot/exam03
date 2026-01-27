@@ -1,6 +1,14 @@
-
-
 #include "get_next_line.h"
+
+size_t ft_strlen(char *s)
+{
+    size_t ret = 0;
+    while (s[ret])
+    {
+        ret++;
+    }
+    return (ret);
+}
 
 char *ft_strchr(char *s, int c)
 {
@@ -24,35 +32,28 @@ void *ft_memcpy(void *dest, const void *src, size_t n)
     return dest;
 }
 
-size_t ft_strlen(char *s)
-{
-    size_t ret = 0;
-    while (s[ret])
-    {
-        ret++;
-    }
-    return (ret);
-}
-
 int str_append_mem(char **s1, char *s2, size_t size2)
 {
     size_t size1;
+
     if (*s1 == NULL)
         size1 = 0;
     else
         size1 = ft_strlen(*s1);
+
     char *tmp = malloc(size2 + size1 + 1);
     if (!tmp)
         return 0;
+
     if (*s1)
         ft_memcpy(tmp, *s1, size1);
     ft_memcpy(tmp + size1, s2, size2);
-    tmp[size1 + size2] = 0;
+    tmp[size1 + size2] = '\0';
+
     free(*s1);
     *s1 = tmp;
     return 1;
 }
-
 int str_append_str(char **s1, char *s2)
 {
     return str_append_mem(s1, s2, ft_strlen(s2));
@@ -70,7 +71,7 @@ void *ft_memmove(void *dest, const void *src, size_t n)
         size_t i = 0;
         while (i < n)
         {
-                d[i] = s[i];
+            d[i] = s[i];
             i++;
         }
     }
@@ -79,7 +80,7 @@ void *ft_memmove(void *dest, const void *src, size_t n)
         size_t i = n;
         while (i > 0)
         {
-                d[i - 1] = s[i - 1];
+            d[i - 1] = s[i - 1];
             i--;
         }
     }
@@ -88,40 +89,53 @@ void *ft_memmove(void *dest, const void *src, size_t n)
 
 char *get_next_line(int fd)
 {
-    static char chunk[BUFFER_SIZE + 1] = "";
-    char *ret = NULL;
+    static char buf[BUFFER_SIZE + 1] = "";
+    char *result = NULL;
 
-    if (chunk[0] == '\0')//
+	// 初期read
+    if (buf[0] == '\0')
     {
-        int read_ret = read(fd, chunk, BUFFER_SIZE);
+        int read_ret = read(fd, buf, BUFFER_SIZE);
         if (read_ret <= 0)
-        return NULL;
-        chunk[read_ret] = '\0';
+        	return NULL;
+        buf[read_ret] = '\0';
     }
 
-    char *tmp = ft_strchr(chunk, '\n');
+	// 初期改行判定
+    char *tmp = ft_strchr(buf, '\n');
+
     while (!tmp)
     {
-        if (!str_append_str(&ret, chunk))
+		// result+buf
+        if (!str_append_str(&result, buf))
             return NULL;
-        int read_ret = read(fd, chunk, BUFFER_SIZE);
+
+		// buf read
+        int read_ret = read(fd, buf, BUFFER_SIZE);
         if (read_ret <= 0)
         {
-            if (ret && *ret)
-                return ret;
-            free (ret);
+            if (result && *result)
+                return result;
+            free (result);
             return NULL;
         }
-        chunk[read_ret] = '\0';
-        tmp = ft_strchr(chunk, '\n');
+        buf[read_ret] = '\0';
+
+		// 改行判定
+        tmp = ft_strchr(buf, '\n');
     }
-    if (!str_append_mem(&ret, chunk, tmp - chunk + 1))
+
+	// result を 改行までにする
+    if (!str_append_mem(&result, buf, tmp - buf + 1))
     {
-        free(ret);
+        free(result);
         return NULL;
     }
-    ft_memmove(chunk, tmp + 1, ft_strlen(tmp + 1) + 1);
-    return ret;
+
+	// buf を改行からにする
+    ft_memmove(buf, tmp + 1, ft_strlen(tmp + 1) + 1);
+
+    return result;
 }
 
 
