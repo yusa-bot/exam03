@@ -27,12 +27,12 @@ void perm(char *str , char *result , int *used, int dep, int len)
 	}
 	for (int i = 0; i < len; i++)
 	{
-		if (used[i]) 
+		if (used[i])
 			continue;
 		used[i] = 1;
 		result[dep] = str[i];
 		perm(str, result , used , dep + 1 , len);
-		used[i] = 0;		
+		used[i] = 0;
 	}
 }
 
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
 	char *result = malloc(len + 1);
 	int *used = calloc(len, sizeof(int));
 	sorted(argv[1]);
-	perm(argv[1], result, used, 0, len);	
+	perm(argv[1], result, used, 0, len);
 	free(result);
 	free(used);
 }
