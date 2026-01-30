@@ -53,7 +53,7 @@ int main(int ac, char **av)
 		return 0;
 
 	int n = atoi(av[1]);
-	if (n < 4)
+	if (n < 4) //
 		return 0;
 
 	int *answer_row = malloc(sizeof(int) * n);
@@ -61,7 +61,7 @@ int main(int ac, char **av)
 		return 0;
 
 	solve(answer_row, 0, n);
+	
 	free(answer_row);
-
 	return 0;
 }

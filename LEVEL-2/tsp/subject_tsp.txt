@@ -1,18 +1,26 @@
 Assignment name			: tsp
 Expected files			: *.c *.h
-Allowed functions   : write, sqrtf, getline, fseek, fscanf, ferror, feof, fabsf, memcpy, fprintf, fclose, malloc, calloc, realloc, free, fopen, errno, stderr, stdin, stdout
+Allowed functions   :
+write, sqrtf, getline, fseek, fscanf, ferror, feof, fabsf,
+memcpy,
+fprintf,
+malloc, calloc, realloc,
+free, fopen, fclose,
+errno,
+stderr, stdin, stdout
 -------------------------------------------------------
 
 この問題を「旅行販売員問題」として初めて言及した出版物は、
 1949年にジュリア・ロビンソンがRAND Corporationの報告書「ハミルトンゲーム（旅行販売員問題）について」で発表したものである。
-
 彼女が問題を定義した方法は以下の通りである。
 
 「本稿の目的は、旅行販売員問題に関連する問題を解決する方法を提示することである。
 元の問題について説明することは有意義と思われる。
-一つの定式化は、ワシントンを出発し、
-すべての州都を訪れた後、ワシントンに戻る販売員のための最短ルートを見つけることである。
+一つの定式化は、
 
+
+
+ワシントンを出発し、すべての州都を訪れた後、ワシントンに戻る販売員のための最短ルートを見つけることである。
 より一般的には、平面上に与えられた n 個の点を含む最短の閉曲線を見つけることである。」
 
 for example with the following set of cities:
@@ -53,4 +61,3 @@ $> cat square.txt
 0, 0
 $> ./tsp < square.txt | cat -e
 4.00$
-

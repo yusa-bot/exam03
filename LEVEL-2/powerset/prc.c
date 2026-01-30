@@ -1,121 +1,92 @@
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-//void print_ans(int len, int int_arr_i, int int_arr_j)
-//{
-//	int i = 0;
-//	while (i < len)
-//	{
-//		printf("%d", int_arr_i)
-//		i++;
-//	}
-//}
-
-//solve(int first_int, int *int_arr, int len)
-//{
-//	int *ans_arr = malloc(sizeof(int) * len + 1);
-//	if (!ans_arr)
-//		return ;
-
-//	for (int i = 0; i < len; i++)
-//	{
-//		for (int j = i+1; j < len; j++)
-//		{
-//			if (first_int == int_arr[i] + int_arr[j])
-//			{
-
-//			}
-//		}
-//	}
-//}
-
-//int main(int ac, char **av)
-//{
-//	if (ac < 2)
-//		return 0;
-
-//	int *int_arr = malloc(sizeof(int) * (ac - 1 + 1));
-//	if (!int_arr)
-//		return 0;
-
-//	int first_int = atoi(av[1]);
-
-//	int i = 0;
-//	int j = 2;
-//	while (av[j])
-//	{
-//		int_arr[i] = atoi(av[j]);
-//		i++;
-//		j++;
-//	}
-//	int_arr[i] = '\0';
-
-//	int len =  ac - 2;
-
-//	solve(first_int, int_arr, len);
-
-//	return 0;
-//}
-
-
-int check_int(char **str, int ac)
+int ft_strlen(char *s)
 {
-	int j = 1;
-	while (j < ac)
+	int len = 0;
+
+	while (s[len])
+		len++;
+
+	return len;
+}
+
+int int_check(char **av)
+{
+	int i = 1;
+
+	while (av[i])
 	{
-		int i = 0;
+		int j = 0;
 
-		if (str[j][i] == '-' || str[j][i] == '+')
-			i++;
+		if (av[i][j] == '+' || av[i][j] == '-')
+			j++;
 
-		while (str[j][i])
+		while (av[i][j])
 		{
-			if (str[j][i] < '0' || str[j][i] > '9')
+			int c = av[i][j] - '0';
+
+			if (c < 0 || c > 9)
 				return 0;
-			i++;
+
+			j++;
 		}
-		j++;
+		i++;
 	}
 	return 1;
 }
 
-void solve(int *nums, int size, int target, int *subset, int index, int sub_size, int curr_sum)
+void solve(int *num_arr, int len, int target, int *sub_num, int index, int sub_size, int curr_sum)
 {
-	if (index == size)
+	if (index == len)
 	{
-		if(curr_sum == target)
+		if (curr_sum == target)
 		{
-			for(int i =0; i < sub_size; i++)
+			for (int i = 0; i < sub_size; i++)
 			{
-				printf("%d", subset[i]);
-				if(i != sub_size - 1)
+				printf("%d", sub_num[i]);
+				if (i < sub_size - 1)
 					printf(" ");
 			}
 			printf("\n");
 		}
 		return ;
 	}
-	solve(nums, size, target, subset, index + 1, sub_size, curr_sum);
-	subset[sub_size] = nums[index];
-	solve(nums, size, target, subset, index + 1, sub_size + 1, curr_sum + nums[index]);
+
+	solve(num_arr, len, target, sub_num, index + 1, sub_size, curr_sum);
+	sub_num[sub_size] = num_arr[index];
+	solve(num_arr, len, target, sub_num, index + 1, sub_size + 1, curr_sum + num_arr[index]);
 }
 
-int main(int ac, char **av)
+int main (int ac, char **av)
 {
-	if(ac > 3 && check_int(av, ac))
+	if (ac > 3 && int_check(av))
 	{
+		int len = ac - 2;
+
+		int *num_arr = malloc(sizeof(int) * (len + 1));
+		if (!num_arr)
+			return 0;
+
 		int target = atoi(av[1]);
 
-		int *nums = malloc(sizeof(int) * (ac - 2));
-		for(int i= 0; i< ac -2; i++)
-			nums[i] = atoi(av[i+2]);
+		int i = 2;
+		int j = 0;
+		while (av[i])
+			num_arr[j++] = atoi(av[i++]);
+		num_arr[j] = '\0';
 
-		int subset[(ac -2)];
+		int *sub_num = malloc(sizeof(int) * len);
+		if (!sub_num)
+			return 0;
 
-		solve(nums, (ac -2), target, subset, 0, 0, 0);
+		solve(num_arr, len, target, sub_num, 0, 0, 0);
 
-		free(nums);
+		free(num_arr);
+		free(sub_num);
 		return 0;
 	}
-	return 1;
+
+	return 0;
 }

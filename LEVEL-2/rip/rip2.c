@@ -42,4 +42,6 @@ int main(int ac, char **ag)
 {
     int m_fix = is_val(ag[1]);
     rip(ag[1], m_fix, 0, 0);
+
+	return 0;
 }
