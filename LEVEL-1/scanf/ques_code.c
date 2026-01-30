@@ -1,44 +1,3 @@
-Assignment name  : ft_scanf
-Expected files   : ft_scanf.c
-
-Allowed functions:
-fgetc, ungetc, ferror, feof,
-isspace, isdigit, stdin,
-va_start, va_arg, va_copy, va_end
-
---------------------------------------------------------------------------------
-
-
-`ft_scanf` という関数を作成し、以下の制約条件で実際の scanf を模倣してください：
-
-- 以下の変換のみを処理する：s、d、c
-- オプション文字 *、m、' は処理不要
-- 最大フィールド幅は処理不要
-- 型修飾子文字 (h, hh, l など) は処理不要
-- %n$ で始まる変換は処理する必要がない
-
-関数は以下のように宣言すること:
-
-int ft_scanf(const char *, ... );
-
-必要なコードの一部を含むファイルがこのディレクトリにある。それを完成させるだけでよい。
-
-プログラムをテストするには、結果を実際の scanf と比較すること。
-
-
-ヒント : `scanf` のマニュアルを読む必要があるかもしれません。
-
-$> ./ft_scanf
-ft_scanf :
-A
-A
-
-$> ./ft_scanf
-ft_scanf :
-42
-42
-
----------------
 
 #include <stdarg.h>
 #include <stdio.h>
@@ -135,4 +94,36 @@ int ft_scanf(const char *format, ...)
 	int ret = ft_vfscanf(stdin, format, ap);
 	// ...
 	return ret;
+}
+
+
+int main()
+{
+    int num1 = 0;
+    char s1[31];
+	char c1;
+
+    printf("scanfの d, s, c を入力してください: ");
+    scanf("%d %s %c", &num1, s1, &c1);
+
+	printf("scanf result: \n");
+    printf("d: %d\n", num1);
+    printf("d: %s\n", s1);
+	printf("d: %c\n", c1);
+
+	//////
+
+	int num2 = 0;
+    char s2[31];
+	char c2;
+
+	printf("ft_scanfの d, s, c を入力してください: ");
+	ft_scanf("%d %s %c", &num2, s2, &c2);
+
+	printf("ft_scanf result: \n");
+    printf("d: %d\n", num2);
+    printf("d: %s\n", s2);
+	printf("d: %c\n", c2);
+
+    return (0);
 }

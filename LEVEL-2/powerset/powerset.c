@@ -21,10 +21,14 @@ int check_int(char **str, int ac)
     return 1;
 }
 
-void solve(int *nums, int size, int target, int *subset, int index, int sub_size, int curr_sum){
-	if(index == size){
-		if(curr_sum == target){
-			for(int i =0; i < sub_size; i++){
+void solve(int *nums, int size, int target, int *subset, int index, int sub_size, int curr_sum)
+{
+	if(index == size)
+	{
+		if(curr_sum == target)
+		{
+			for(int i =0; i < sub_size; i++)
+			{
 				printf("%d", subset[i]);
 				if(i != sub_size - 1)
 					printf(" ");
@@ -38,16 +42,22 @@ void solve(int *nums, int size, int target, int *subset, int index, int sub_size
 	solve(nums, size, target, subset, index + 1, sub_size + 1, curr_sum + nums[index]);
 }
 
-int main(int ac, char **av){
-	if(ac > 3 || check_int(av, ac)){
+int main(int ac, char **av)
+{
+	if(ac > 3 && check_int(av, ac))
+	{
 		int target = atoi(av[1]);
+
 		int *nums = malloc(sizeof(int) * (ac - 2));
-		for(int i= 0; i< ac -2; i++){
+
+		for(int i= 0; i< ac -2; i++)
+		{
 			nums[i] = atoi(av[i+2]);
 		}
+
 		int subset[(ac -2)];
 		solve(nums, (ac -2), target, subset, 0, 0, 0);
-		free(nums);	
+		free(nums);
 		return 0;
 	}
 	return 1;

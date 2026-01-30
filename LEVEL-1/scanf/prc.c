@@ -1,137 +1,219 @@
+
+#include <stdarg.h>
 #include <stdio.h>
+#include <ctype.h>
 
-// int main()
-// {
-//     int num;
-//     float height;
-
-//     printf("整数と浮動小数点数を入力してください: ");
-//     // 整数と浮動小数点数を読み込む
-//     scanf("%d %f", &num, &height);
-
-//     printf("入力された整数: %d\n", num);
-//     printf("入力された浮動小数点数: %.2f\n", height);
-
-//     return (0);
-// }
-
-int	ap(int count, ...)
+int match_space(FILE *f)
 {
-	va_list	ap;
-	int		sum;
-	int		i;
+    int c = fgetc(f);
+	while (c != EOF && isspace(c))
+		c = fgetc(f);
 
-	va_start(ap, count);
-	sum = 0;
-	i = 0;
-	while (i < count)
+	if (c == EOF)
+		return -1;
+
+	ungetc(c, f);
+
+    return 1;
+}
+
+int match_char(FILE *f, char c)
+{
+    int input = fgetc(f);
+
+	if (input == EOF)
+        return -1;
+
+	if (input == c)
+        return 1;
+
+	ungetc(input, f);
+    return (0);
+}
+
+int scan_char(FILE *f, va_list ap)
+{
+    int c = fgetc(f);
+    if (c == EOF)
+        return -1;
+    char *ptr = va_arg(ap, char*);
+    *ptr = c;
+    return 1;
+}
+
+int scan_int(FILE *f, va_list ap)
+{
+	int digit_scaned = 0;
+	int sign = 1;
+	int c = fgetc(f);
+	int r = 0;
+
+	if (c == '+' || c == '-')
 	{
-		sum += va_arg(ap, int);
-		i++;
+		if (c == '-')
+            sign = -1;
+		c = fgetc(f);
 	}
-	va_end(ap);
-	return (sum);
+
+	while (c != EOF && isdigit(c))
+	{
+		r = r * 10 + (c - '0');
+		digit_scaned++;
+		c = fgetc(f);
+	}
+	if (c != EOF)
+		ungetc(c, f);
+
+	if (digit_scaned == 0)
+		return 0;
+
+	int *ptr = va_arg(ap, int*);
+	*ptr = r * sign;
+
+    return 1;
 }
 
-int	main(void)
+int scan_string(FILE *f, va_list ap)
 {
-	printf("%d\n", ap(3, 10, 20, 30));
-	return (0);
+	char *str = va_arg(ap, char*);
+	int c = fgetc(f);
+	int chars_scaned = 0;
+
+    while (c != EOF && !isspace(c))
+	{
+		str[chars_scaned] = c;
+		chars_scaned++;
+		c = fgetc(f);
+	}
+	if (c != EOF)
+		ungetc(c, f);
+
+	str[chars_scaned] = '\0';
+
+	if (chars_scaned == 0)
+		return 0;
+
+    return 1;
 }
 
-////
 
-// #include <stdarg.h>
-// #include <stdio.h>
-// #include <ctype.h>
+int	match_conv(FILE *f, const char **format, va_list ap)
+{
+	switch (**format)
+	{
+		case 'c':
+			return scan_char(f, ap);
+		case 'd':
+			match_space(f);
+			return scan_int(f, ap);
+		case 's':
+			match_space(f);
+			return scan_string(f, ap);
+		default:
+			return -1;
+	}
+}
 
-// int match_space(FILE *f)
-// {
-//         // You may insert code here
-//     return (0);
-// }
+int ft_vfscanf(FILE *f, const char *format, va_list ap)
+{
+	int nconv = 0;
+	int ret;
 
-// int match_char(FILE *f, char c)
-// {
-//         // You may insert code here
-//     return (0);
-// }
+	while (*format)
+	{
+		if (*format == '%')
+		{
+			format++;
+			ret = match_conv(f, &format, ap);
 
-// int scan_char(FILE *f, va_list ap)
-// {
-//         // You may insert code here
-//     return (0);
-// }
+			if (ret == -1)
+			{
+				if (nconv == 0)
+					return EOF;
+				else
+					return nconv;
+			}
 
-// int scan_int(FILE *f, va_list ap)
-// {
-//         // You may insert code here
-//     return (0);
-// }
+			else if (ret == 0)
+				return nconv;
 
-// int scan_string(FILE *f, va_list ap)
-// {
-//         // You may insert code here
-//     return (0);
-// }
+			else
+				nconv++;
+		}
 
-// int	match_conv(FILE *f, const char **format, va_list ap)
-// {
-// 	switch (**format)
-// 	{
-// 		case 'c':
-// 			return (scan_char(f, ap));
-// 		case 'd':
-// 			match_space(f);
-// 			return (scan_int(f, ap));
-// 		case 's':
-// 			match_space(f);
-// 			return (scan_string(f, ap));
-// 		case EOF:
-// 			return (-1);
-// 		default:
-// 			return (-1);
-// 	}
-// }
+		else if (isspace(*format))
+		{
+			if (match_space(f) == -1)
+			{
+				if (nconv == 0)
+					return EOF;
+				else
+					return nconv;
+			}
+		}
 
-// int ft_vfscanf(FILE *f, const char *format, va_list ap)
-// {
-// 	int nconv = 0;
+		else
+		{
+			ret = match_char(f, *format);
+			if (ret == -1)
+			{
+				if (nconv == 0)
+					return EOF;
+				else
+					return nconv;
+			}
+			else if (ret == 0)
+				return nconv;
+		}
 
-// 	int c = fgetc(f);
-// 	if (c == EOF)
-// 		return (EOF);
-// 	ungetc(c, f);
+		format++;
+	}
 
-// 	while (*format)
-// 	{
-// 		if (*format == '%')
-// 		{
-// 			format++;
-// 			if (match_conv(f, &format, ap) != 1)
-// 				break ;
-// 			else
-// 				nconv++;
-// 		}
-// 		else if (isspace(*format))
-// 		{
-// 			if (match_space(f) == -1)
-// 				break ;
-// 		}
-// 		else if (match_char(f, *format) != 1)
-// 			break ;
-// 		format++;
-// 	}
+	if (ferror(f))
+		return EOF;
+	return nconv;
+}
 
-// 	if (ferror(f))
-// 		return (EOF);
-// 	return (nconv);
-// }
 
-// int ft_scanf(const char *format, ...)
-// {
-// 	// ...
-// 	int ret = ft_vfscanf(stdin, format, ap);
-// 	// ...
-// 	return (ret);
-// }
+int ft_scanf(const char *format, ...)
+{
+    va_list ap;
+    va_start(ap, format);
+
+    int ret = ft_vfscanf(stdin, format, ap);
+
+    va_end(ap);
+    return ret;
+}
+
+
+int main()
+{
+    int num1 = 0;
+    char s1[31];
+	char c1;
+
+    printf("scanfの d, s, c を入力してください: ");
+    scanf("%d %s %c", &num1, s1, &c1);
+
+	printf("scanf result: \n");
+    printf("d: %d\n", num1);
+    printf("d: %s\n", s1);
+	printf("d: %c\n", c1);
+
+	//////
+
+	int num2 = 0;
+    char s2[31];
+	char c2;
+
+	printf("ft_scanfの d, s, c を入力してください: ");
+	ft_scanf("%d %s %c", &num2, s2, &c2);
+
+	printf("ft_scanf result: \n");
+    printf("d: %d\n", num2);
+    printf("d: %s\n", s2);
+	printf("d: %c\n", c2);
+
+    return (0);
+}

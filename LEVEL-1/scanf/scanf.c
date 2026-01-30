@@ -3,7 +3,8 @@
 #include <ctype.h>
 #include <unistd.h>
 
-int match_space(FILE *f) {
+int match_space(FILE *f)
+{
     int c = fgetc(f);
     while (c != EOF && isspace(c))
         c = fgetc(f);
@@ -13,7 +14,8 @@ int match_space(FILE *f) {
     return 1;
 }
 
-int match_char(FILE *f, char c) {
+int match_char(FILE *f, char c)
+{
     int input = fgetc(f);
     if (input == EOF)
         return -1;
@@ -23,7 +25,8 @@ int match_char(FILE *f, char c) {
     return 0;
 }
 
-int scan_char(FILE *f, va_list ap) {
+int scan_char(FILE *f, va_list ap)
+{
     int c = fgetc(f);
     if (c == EOF)
         return -1;
@@ -32,23 +35,27 @@ int scan_char(FILE *f, va_list ap) {
     return 1;
 }
 
-int scan_int(FILE *f, va_list ap) {
+int scan_int(FILE *f, va_list ap)
+{
     int sign = 1;
     int digit_scaned = 0;
     int c = fgetc(f);
     int r = 0;
 
-    if (c == '+' || c == '-') {
+    if (c == '+' || c == '-')
+    {
         if (c == '-')
             sign = -1;
         c = fgetc(f);
     }
 
-    while (c != EOF && isdigit(c)) {
+    while (c != EOF && isdigit(c))
+    {
         r = r * 10 + (c - '0');
         digit_scaned++;
         c = fgetc(f);
     }
+
     if (c != EOF)
         ungetc(c, f);
     if (digit_scaned == 0)
@@ -93,7 +100,8 @@ int match_conv(FILE *f, const char **format, va_list ap)
     }
 }
 
-int ft_vfscanf(FILE *f, const char *format, va_list ap) {
+int ft_vfscanf(FILE *f, const char *format, va_list ap)
+{
     int nconv = 0;
     int ret;
 
@@ -123,6 +131,7 @@ int ft_vfscanf(FILE *f, const char *format, va_list ap) {
                 return (nconv == 0) ? -1 : nconv;
             }
         }
+
 		else
 		{
             ret = match_char(f, *format);
@@ -135,6 +144,7 @@ int ft_vfscanf(FILE *f, const char *format, va_list ap) {
                 return nconv;
             }
         }
+
         format++;
     }
     if (ferror(f))

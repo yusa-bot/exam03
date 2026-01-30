@@ -2,52 +2,66 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-int is_safe(int *positions, int current_col, int current_row)
+int is_safe(int *answer_row, int curr_col, int curr_row)
 {
-	for (int prev_col = 0; prev_col < current_col; prev_col++)
+	for (int prev_col = 0; prev_col < curr_col; prev_col++)
 	{
-		int prev_row = positions[prev_col];
-		if (prev_row == current_row ||
-			prev_row - prev_col == current_row - current_col ||
-			prev_row + prev_col == current_row + current_col)
+		int prev_row = answer_row[prev_col]; // 過去に置いた colのrow を1つづつ代入.
+
+		if (curr_row == prev_row ||
+			curr_row - curr_col == prev_row - prev_col ||
+			curr_row + curr_col == prev_row + prev_col)
 			return 0;
 	}
 	return 1;
 }
 
-void solve(int *positions, int col, int n)
+// curr_col++
+void solve(int *answer_row, int curr_col, int n)
 {
-	if (col == n)
+	// 1row print
+	if (curr_col == n)
 	{
-	   for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			if (i > 0)
 				printf(" ");
-			printf("%d", positions[i]);
+			printf("%d", answer_row[i]);
 		}
 		printf("\n");
-		return;
+		return ; // 呼び出し元へ戻る
 	}
-	for(int row = 0; row < n; row++)
+
+	// curr_row++ で1つづつcheck
+	for (int curr_row = 0; curr_row < n; curr_row++) // 出力の1文字 = 1row
 	{
-		if(is_safe(positions, col, row))
+		// 既に置いた 行0 ~ 行curr までで重複しないか？
+		int safe_flag = is_safe(answer_row, curr_col, curr_row);
+
+		if (safe_flag == 1)
 		{
-			positions[col] = row;
-			solve(positions, col + 1, n);
+			answer_row[curr_col] = curr_row;
+
+			solve(answer_row, curr_col+1, n); // 続けるべき時だけ再帰で進む = 正しい数だけsolveを呼べる.
 		}
 	}
 }
 
 int main(int ac, char **av)
 {
-	if(ac == 2 && av[1][0] != '-')
-	{
-		int n = atoi(av[1]);
-		int *positions = malloc(sizeof(int) * n);
-		if (!positions)
-			return 1;
-		solve(positions, 0, n);
-		free(positions);
-	}
+	if (ac != 2)
+		return 0;
+
+	int n = atoi(av[1]);
+	if (n < 4)
+		return 0;
+
+	int *answer_row = malloc(sizeof(int) * n);
+	if (!answer_row)
+		return 0;
+
+	solve(answer_row, 0, n);
+	free(answer_row);
+
 	return 0;
 }
